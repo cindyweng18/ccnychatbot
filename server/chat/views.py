@@ -6,10 +6,11 @@ from django.shortcuts import render
 def index (request):
     return render (request, 'index.html')
 
-# def room (request, room_name):
-#     return render (request, 'chatroom.html', {
-#         'room': room_name
-#     })
+def room (request, room_name):
+    return render (request, 'chatroom.html', {
+        'room': room_name
+    })
+
 
 
 # Class Based Serializer Views
@@ -71,6 +72,7 @@ class RoomDetail (APIView):
 
 
 
+# Function based serializer views
 @api_view (['GET'])
 def messageList (request):
     """

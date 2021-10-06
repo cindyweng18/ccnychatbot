@@ -1,4 +1,63 @@
+"""
+A Channel is a mailbox where messages can be sent to
+A Group is a group of related channels. Anyone who has the name of a group
+can add/remove a channel to the group by name and send a message to all 
+channels in the group
+
+Every consumer instance of ChatRoomConsumer has an automatically generated
+unique channel name and so can be communicated via a channel layer
+
+In our application we want to have mutiple instances of ChatRoomConsumer
+in the same room communicate with each other. To do that we will have
+each ChatRoomConsumer add its channel to a group whose name is based
+on the room name. That will allow ChatRoomConsumer to transmit messages
+to all other ChatRoomConsumers in the same room
+"""
+
 from channels.generic.websocket import AsyncWebsocketConsumer
+import json
 
 class ChatRoomConsumer (AsyncWebsocketConsumer):
-    pass
+    # Create the Websocket connection
+    async def connect(self):
+
+        # get the room_name from the url path that opened the WebSocket connection to the ChatRoomConsumer
+        self.room_name = self.scope ['url_route']['kwargs']['room_name']
+
+        # Create a Channel Group based on the user-specified oom_name
+        self.room_group_name = 'chat_%s' % self.room_name
+
+        # Add the room_group_name to the channel layer
+        await self.channel_layer.group_add (
+            self.room_group_name,
+            self.channel_name
+        )
+
+        # Accept the Websocket connection
+        await self.accept ()
+
+        # Broadcast the message to the group
+        await self.channel_layer.group_send (
+            # Room/Group we are broadcasting the message to
+            self.room_group_name,
+            # Payload
+            {
+                'type': 'tester_message',       # this has to match the function name
+                'tester': 'hello world'         # Name of the event is tester
+            }
+        )
+    
+    async def tester_message (self, event):     # the function name has to match the type in group send
+        tester = event ['tester']
+
+        await self.send (text_data = json.dumps ({
+            'tester': tester
+        }))
+
+
+    # Disconnect the Websocket connection
+    async def disconnect(self, code):
+        await self.channel_layer_group_discard (
+            self.room_group_name,
+            self.channel_name
+        )
