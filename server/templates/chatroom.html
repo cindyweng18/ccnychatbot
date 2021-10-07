@@ -15,12 +15,42 @@
 
     <!-- Optional JavaScript; choose one of the two! -->
 
-    <div id = "user-hello">
+    <div class="container">
+      <div class="row d-flex justify-content-center">
+          <div class="col-6">
+              <form>
+                  <div class="form-group">
+                      <label for="exampleFormControlTextarea1" class="h4 pt-5">Chatroom</label>
+                      <textarea class="form-control" id="chat-text" rows="10"></textarea><br>
+                  </div>
+                  <div class="form-group">
+                      <input class="form-control" id="input" type="text"></br>
+                  </div>
+                  <input class="btn btn-secondary btn-lg btn-block" id="submit" type="button" value="Send">
+              </form>
+          </div>
+      </div>
+  </div>
 
-    </div>
+
+
+    <div id = "user-hello"></div>
+
 
     {{ room_name|json_script:"room-name" }}   <!-- room_name is coming from the return in room function from views.py -->
+    {{ request.user.username|json_script:"user_username" }}
     <script>
+      const user_username = JSON.parse (document.getElementById ('user_username').textContent)
+      document.querySelector ('#submit').onclick = function (e) {
+        const messageInputDom = document.querySelector ('#input')
+        const message = messageInputDom.value
+        chatSocket.send (JSON.stringify ({
+          'message': message,
+          'username': user_username
+        }))
+        messageInputDom.value = ''
+      }
+
         const roomName = JSON.parse (document.getElementById ('room-name').textContent)
 
         const chatSocket = new WebSocket (
@@ -33,9 +63,8 @@
 
         chatSocket.onmessage = function (e) {
             const data = JSON.parse (e.data)
-            console.log (`Data: ${data.tester}`)
 
-            document.querySelector ('#user-hello').innerHTML = (data.tester)
+            document.querySelector ('#chat-text').value  += (data.username + ': '+ data.message + '\n')
         }
     </script>
 

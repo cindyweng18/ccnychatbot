@@ -18,6 +18,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 
 class ChatRoomConsumer (AsyncWebsocketConsumer):
+
     # Create the Websocket connection
     async def connect(self):
 
@@ -36,28 +37,40 @@ class ChatRoomConsumer (AsyncWebsocketConsumer):
         # Accept the Websocket connection
         await self.accept ()
 
+
+
+    # Disconnect the Websocket connection
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard (
+            self.room_group_name,
+            self.channel_name
+        )
+
+
+    #  Receive the messages 
+    async def receive(self, text_data):
+        # text_data has a key called message coming in from the frontend
+        text_data_json = json.loads (text_data)
+        username = text_data_json['username']
+        message = text_data_json['message']
+
         # Broadcast the message to the group
         await self.channel_layer.group_send (
             # Room/Group we are broadcasting the message to
             self.room_group_name,
             # Payload
             {
-                'type': 'tester_message',       # this has to match the function name
-                'tester': 'hello world'         # Name of the event is tester
+                'type': 'chatroom_message',     # this has to match the function name
+                'message': message ,         # name of the event is message
+                'username': username
             }
         )
-    
-    async def tester_message (self, event):     # the function name has to match the type in group send
-        tester = event ['tester']
+    # Get the message from the front end and do stuff with it
+    async def chatroom_message (self, event):
+        message = event ['message']
+        username = event['username']
 
-        await self.send (text_data = json.dumps ({
-            'tester': tester
+        await self.send (text_data=json.dumps ({
+            'message': message,
+            'username': username
         }))
-
-
-    # Disconnect the Websocket connection
-    async def disconnect(self, code):
-        await self.channel_layer_group_discard (
-            self.room_group_name,
-            self.channel_name
-        )
