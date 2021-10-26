@@ -1,199 +1,61 @@
-import React, { Component } from 'react'
-import { w3cwebsocket as W3CWebSocket } from 'websocket'
+import React, {useState, useEffect,useRef } from 'react'
 
-import Button from '@material-ui/core/Button'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import TextField from '@material-ui/core/TextField'
-import Link from '@material-ui/core/Link'
-import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
-import Container from '@material-ui/core/Container'
-import Card from '@material-ui/core/Card'
-import CardHeader from '@material-ui/core/CardHeader'
-import Paper from '@material-ui/core/Paper'
-import Avatar from '@material-ui/core/Avatar'
+import Container from '@mui/material/Container';
 
-import { withStyles } from '@material-ui/core/styles'
+import Header from './components/header/Header';
+import Chat from './components/chat/Chat';
+import MessageBox from './components/messageBox/MessageBox'
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
-const useStyles = theme => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  root: {
-    boxShadow: 'none',
-  }
-})
+const App =()=> {
 
-class App extends Component {
+  const sampleConvo=[
+    {mes:'Hey',res:'Hi!'},
+    {mes:'Can you help me?',res:'Yes.'},
+    {mes:'What is the ccny website link?',res:'Please visit https://www.ccny.cuny.edu/'},
+    {mes:'Thanks',res:'You are welcome!'},
+  ]
+  const [convo, setConvo] = useState([])
+  const [isOpen, setIsOpen] = useState(false)
 
-  state = {
-    isLoggedIn: false,
-    messages: [],
-    value: '',
-    name: '',
-    room: 'Django',
-  }
+  const ref = useRef()
+  useEffect(() => {
+    setConvo(sampleConvo)
+  },[])
 
-  client = new W3CWebSocket(`ws://localhost:8000/ws/chat/${this.state.room}/`);
+  const handleClick = (e) => {
 
-  onButtonClicked = (e) => {
-    this.client.send(JSON.stringify({
-      type: "message",
-      message: this.state.value,
-      name: this.state.name
-    }));
-    this.state.value = ''
     e.preventDefault();
-  }
-
-  componentDidMount() {
-    this.client.onopen = () => {
-      console.log('WebSocket Client Connected');
-    };
-    this.client.onmessage = (message) => {
-      const dataFromServer = JSON.parse(message.data);
-      console.log('got reply! ', dataFromServer.type);
-      if (dataFromServer) {
-        this.setState((state) =>
-          ({
-            messages: [...state.messages,
-            {
-              msg: dataFromServer.message,
-              name: dataFromServer.name,
-            }]
-          })
-        );
-      }
-    };
-  }
-
-  render() {
-    const { classes } = this.props;
-    return (
-      <Container component="main" maxWidth="xs">
-        {this.state.isLoggedIn ?
-          <div style={{ marginTop: 50, }}>
-            <h2>{this.state.room}</h2>
-            <Paper style={{ height: 500, maxHeight: 500, overflow: 'auto', boxShadow: 'none', }}>
-              {this.state.messages.map(message => <>
-                <Card className={classes.root}>
-                  <CardHeader
-                    avatar={
-                      <Avatar className={classes.avatar}>
-                        R
-                  </Avatar>
-                    }
-                    title={message.name}
-                    subheader={message.msg}
-                  />
-                </Card>
-              </>)}
-            </Paper>
-
-            <form className={classes.form} noValidate onSubmit={this.onButtonClicked}>
-              <TextField
-                id="outlined-helperText"
-                label="Type message here"
-                defaultValue="Default Value"
-                variant="outlined"
-                value={this.state.value}
-                fullWidth
-                onChange={e => {
-                  this.setState({ value: e.target.value });
-                  this.value = this.state.value;
-                }}
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-              >
-                Send Message
-                </Button>
-            </form>
-          </div>
-          :
-          <div>
-            <CssBaseline />
-            <div className={classes.paper}>
-              <Typography component="h1" variant="h5">
-                ChattyRooms
-                </Typography>
-              <form className={classes.form} noValidate onSubmit={value => this.setState({ isLoggedIn: true })}>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Chatroom Name"
-                  name="Chatroom Name"
-                  autoFocus
-                  value={this.state.room}
-                  onChange={e => {
-                    this.setState({ room: e.target.value });
-                    this.value = this.state.room;
-                  }}
-                />
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="Username"
-                  label="Username"
-                  type="Username"
-                  id="Username"
-                  value={this.state.name}
-                  onChange={e => {
-                    this.setState({ name: e.target.value });
-                    this.value = this.state.name;
-                  }}
-                />
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                >
-                  Start Chatting
-                  </Button>
-                <Grid container>
-                  <Grid item xs>
-                    <Link href="#" variant="body2">
-                      Forgot password?
-                      </Link>
-                  </Grid>
-                  <Grid item>
-                    <Link href="#" variant="body2">
-                      {"Don't have an account? Sign Up"}
-                    </Link>
-                  </Grid>
-                </Grid>
-              </form>
-            </div>
-          </div>}
-      </Container>
-    )
+    //TODO: Get response from ML model using mes.
+    let newConvo= [...convo]
+    newConvo.push({mes:ref.current.value,res:`random response ${Math.floor(Math.random() * 20)}`})
+    setConvo(newConvo)
+    ref.current.value = ""
 
   }
+
+  const openModal = ()=> {
+    setIsOpen(!isOpen)
+  }
+
+  return (
+    <>
+    {isOpen ?
+    <Container component="main" maxWidth="xs"style={{bottom:150,right:150,position:'absolute' }}>
+      <div style={{ boxShadow: '0px 0px 50px #a7a7a7', borderRadius: '1rem 1rem 1rem 1rem'}}>
+        <Header openModal={openModal}/>
+        <Chat convo={convo}/>
+        <MessageBox handleClick={handleClick} ref={ref}/>
+      </div>
+    </Container>
+    
+    :
+    <div onClick={openModal}>
+      <ChatBubbleOutlineIcon sx={{ color: 'white',backgroundImage: 'linear-gradient(to right, #6e0fc8, #cd49e6)',fontSize:'5rem',borderRadius:'50%',padding:'2rem',bottom:50,right:50,position:'absolute' }}/>
+    </div>
+    }
+    </>
+  )
 }
 
-export default withStyles (useStyles) (App)
+export default App
