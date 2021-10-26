@@ -66,30 +66,30 @@ df['Label'] = le.fit_transform(df['Label'])
 df['Label'].value_counts(normalize = True)
 
 #converting Text column to lower case and remove punctuations
-df['Text'] = df['Text'].str.lower().apply(lambda x: re.sub(r'[.,"\'-?:!;]', '', x))
+# df['Text'] = df['Text'].str.lower().apply(lambda x: re.sub(r'[.,"\'-?:!;]', '', x))
 
-stop_words = stopwords.words('english')
+# stop_words = stopwords.words('english')
 
-df['text_without_stopwords'] = df['Text'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop_words)]))
-df.head()
-stop_words
+# df['text_without_stopwords'] = df['Text'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop_words)]))
+# df.head()
+# stop_words
 
-df['Text']
+# df['Text']
 
-lemmatizer = WordNetLemmatizer()
-tokenizer = WhitespaceTokenizer()
-nlp = spacy.load('en', disable=['parser', 'ner'])
+# lemmatizer = WordNetLemmatizer()
+# tokenizer = WhitespaceTokenizer()
+# nlp = spacy.load('en', disable=['parser', 'ner'])
 
-df.head(10)
+# df.head(10)
 
-df['lem_text'] = df['text_without_stopwords'].apply(lambda row: " ".join([w.lemma_ for w in nlp(row)]))
-df.tail(20)
+# df['lem_text'] = df['text_without_stopwords'].apply(lambda row: " ".join([w.lemma_ for w in nlp(row)]))
+# df.tail(20)
 
 # Fix misspelled words
-df['corrected_words'] = df['lem_text'].apply(lambda x: str(TextBlob(x).correct()))
-df.tail(20)
+# df['corrected_words'] = df['lem_text'].apply(lambda x: str(TextBlob(x).correct()))
+# df.tail(20)
 
-train_text, train_labels = df['lem_text'], df['Label']
+train_text, train_labels = df['Text'], df['Label']
 
 from transformers import DistilBertTokenizer, DistilBertModel
 # Load the DistilBert tokenizer
@@ -103,14 +103,14 @@ pd.Series(seq_len).hist(bins = 10)
 max_seq_len = 10
 
 # get length of all the messages in the train set
-seq_len = [len(i.split()) for i in df['text_without_stopwords']]
-pd.Series(seq_len).hist(bins = 10)
-max_seq_len = 10
+# seq_len = [len(i.split()) for i in df['text_without_stopwords']]
+# pd.Series(seq_len).hist(bins = 10)
+# max_seq_len = 10
 
 # get length of all the messages in the train set
-seq_len = [len(i.split()) for i in df['lem_text']]
-pd.Series(seq_len).hist(bins = 10)
-max_seq_len = 10
+# seq_len = [len(i.split()) for i in df['lem_text']]
+# pd.Series(seq_len).hist(bins = 10)
+# max_seq_len = 10
 
 # tokenize and encode sequences in the training set
 tokens_train = tokenizer(
@@ -140,9 +140,9 @@ def counter(text, columnText, quantity):
 
 counter(df, 'Text', 15)
 
-counter(df, 'text_without_stopwords', 15)
+# counter(df, 'text_without_stopwords', 15)
 
-counter(df, 'lem_text', 15)
+# counter(df, 'lem_text', 15)
 
 # for train set
 train_seq = torch.tensor(tokens_train['input_ids'])
