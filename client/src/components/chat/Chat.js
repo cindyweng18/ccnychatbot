@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './Chat.css'
 
-const Chat =(props)=>{
+const Chat =React.forwardRef((props,ref)=>{
     const {convo} = props
 
     return (
@@ -16,7 +16,8 @@ const Chat =(props)=>{
                     </div>
                 </>
             )}
+            <div ref={ref}></div>
         </div>
     );
-}
+})
 export default Chat
