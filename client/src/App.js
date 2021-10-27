@@ -35,10 +35,12 @@ const App =()=> {
   const handleClick = (e) => {
     e.preventDefault();
     //TODO: Get response from ML model using mes.
-    let newConvo= [...convo]
-    newConvo.push({mes:ref.current.value,res:`random response ${Math.floor(Math.random() * 20)}`})
-    setConvo(newConvo)
-    ref.current.value = ""
+    if(ref.current.value.length>0){
+      let newConvo= [...convo]
+      newConvo.push({mes:ref.current.value,res:`random response ${Math.floor(Math.random() * 20)}`})
+      setConvo(newConvo)
+      ref.current.value = ""
+    }
   }
 
   const openModal = ()=> {
