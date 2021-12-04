@@ -134,40 +134,34 @@ def train(model, train_dataloader, device, weights):
   
   # empty list to save model predictions
   total_preds=[]
-  # TODO: Fix progress bar
-  with tqdm(enumerate(train_dataloader), total=len(train_dataloader), unit="batch", leave=True) as tepoch:
-    # iterate over batches
-    for step,batch in enumerate(train_dataloader):
-    
-    # progress update after every 50 batches.
-        # if step % 50 == 0 and not step == 0:
-        #     print('  Batch {:>121,}  of  {:>121,}.'.format(step,    len(train_dataloader)))
-        # push the batch to gpu
-        batch = [r.to(device) for r in batch] 
-        sent_id, mask, labels = batch
+  progress = tqdm(train_dataloader, total=int(len(train_dataloader)), unit='batch')
+  # iterate over batches
+  for step,batch in enumerate(progress):
+    # push the batch to gpu
+    batch = [r.to(device) for r in batch] 
+    sent_id, mask, labels = batch
 
-        # get model predictions for the current batch
-        preds = model(sent_id, mask)
-    
-        # compute the loss between actual and predicted values
-        loss = cross_entropy(preds, labels)
-        # add on to the total loss
-        total_loss = total_loss + loss.item()
-        # backward pass to calculate the gradients
-        loss.backward()
-        # clip the the gradients to 1.0. It helps in preventing the    exploding gradient problem
-        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-        # update parameters
-        optimizer.step()
-        # clear calculated gradients
-        optimizer.zero_grad()
+    # get model predictions for the current batch
+    preds = model(sent_id, mask)
 
-        # model predictions are stored on GPU. So, push it to CPU
-        preds=preds.detach().cpu().numpy()
-        # append the model predictions
-        total_preds.append(preds)
-        tepoch.set_postfix(loss=loss.item())
-        sleep(0.1)
+    # compute the loss between actual and predicted values
+    loss = cross_entropy(preds, labels)
+    # add on to the total loss
+    total_loss = total_loss + loss.item()
+    # backward pass to calculate the gradients
+    loss.backward()
+    # clip the the gradients to 1.0. It helps in preventing the exploding gradient problem
+    torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+    # update parameters
+    optimizer.step()
+    # clear calculated gradients
+    optimizer.zero_grad()
+
+    # model predictions are stored on GPU. So, push it to CPU
+    preds=preds.detach().cpu().numpy()
+    # append the model predictions
+    total_preds.append(preds)
+    progress.set_postfix(loss=loss.item())
   # compute the training loss of the epoch
   avg_loss = total_loss / len(train_dataloader)
 
