@@ -761,6 +761,50 @@
   {
       "tag":"social_media",
       "responses":["You can find us on Facebook (https://www.facebook.com/TheCityCollegeofNewYork), Twitter (https://www.twitter.com/citycollegeny), Instagram (https://www.instagram.com/ccnycitycollege), and Youtube (https://www.youtube.com/user/citycollegeofny)"]
+  },
+  {
+       "tag": "basketball",
+       "responses": ["City college has both a men's and women's basketball team, please visit https://ccnyathletics.com/index.aspx to learn more about athletics at CCNY!"]
+  },
+  {
+       "tag": "soccer",
+       "responses": ["City college has both a men's and women's soccer team, please visit https://ccnyathletics.com/index.aspx to learn more about athletics at CCNY!"]
+  },
+  {
+       "tag": "baseball",
+       "responses": ["City college has a men's baseball team, please visit https://ccnyathletics.com/index.aspx to learn more about athletics at CCNY!"]
+  },
+  {
+       "tag": "track",
+       "responses": ["City college has both indoor and outdoor track teams for men and women, please visit https://ccnyathletics.com/index.aspx to learn more about athletics at CCNY!"]
+  },
+  {
+       "tag": "lacrosse",
+       "responses": ["TCity college has a men's Lacrosse team, please visit https://ccnyathletics.com/index.aspx to learn more about athletics at CCNY!"]
+  }, 
+  {
+       "tag": "volleyball",
+       "responses": ["City college has both a men's and women's volleyball team, please visit https://ccnyathletics.com/index.aspx to learn more about athletics at CCNY!"]
+  },
+  {
+       "tag": "sports",
+       "responses": ["City college offers a wide variety of sports to choose from such as basketball, soccer, baseball, volleyball, fencing, and more.  Please visit https://ccnyathletics.com/index.aspx to learn more about athletics at CCNY!"]
+  },
+  {
+       "tag": "greek",
+       "responses": ["City college offers a wide veriety of Greek organization to enrich the university experience. You can find a list of recognized Greek lettered organizations and how to contact them here: https://www.ccny.cuny.edu/activities/fraternities-and-sororities"]
+  },
+  {
+       "tag": "student_gov",
+       "responses": ["Our student government serve as representatives on behalf of the students to the faculty and administration of the college. You can find out more about the student government here: https://www.ccny.cuny.edu/activities/usg"]
+  },
+  {
+       "tag": "student_gov_contact",
+       "responses": ["You can reach the student government through this email:  usg@gtest.ccny.cuny.edu"]
+  },
+  {
+       "tag": "student_gov_vote",
+       "responses": ["To find out how you can participate in the student government elections, visit: https://www.ccny.cuny.edu/activities/student-government-elections"]
   }
  ]
 }
